@@ -10,23 +10,21 @@ function ok(arr)
 end
 
 println("part A")
-global count = 0
-for row in eachrow(data)
-    if ok(filter(x -> !ismissing(x), Vector(row[:])))
-        global count += 1
-    end
-end
-count |> println
+data |>
+eachrow |>
+row -> map(row -> row[:] |>
+                  Vector |> (v -> filter(!ismissing, v)) |>
+                  ok, eachrow(data)) |>
+       sum |> println
 
 function ok2(arr)
     return ok(arr) || reduce((a, b) -> a || b, map(i -> ok([arr[1:i-1]; arr[i+1:end]]), 1:length(arr)))
 end
 
 println("part B")
-global count = 0
-for row in eachrow(data)
-    if ok2(filter(x -> !ismissing(x), Vector(row[:])))
-        global count += 1
-    end
-end
-count |> println
+data |>
+eachrow |>
+row -> map(row -> row[:] |>
+                  Vector |> (v -> filter(!ismissing, v)) |>
+                  ok2, eachrow(data)) |>
+       sum |> println
