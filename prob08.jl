@@ -13,8 +13,6 @@ function read_input()
             end
         end
     end
-    println(input)
-    println(input[1])
     return (res, length(input), length(input[1]))
 end
 
@@ -38,3 +36,35 @@ end
 println("part A")
 input, m, n = read_input()
 println(a(input, m, n))
+
+function reduce(v)
+    return Int.([v[1]; v[2]] / gcd(v[1], v[2]))
+end
+
+function b(input, m, n)
+    antinodes = Vector{Vector{Int64}}()
+    for (c, nodes) in input
+        for (i, a) in enumerate(nodes)
+            for (j, b) in enumerate(nodes)
+                k = 1
+                added = true
+                while added
+                    added = false
+                    if (i != j) && (1 <= minimum(b + k * reduce(a - b))) && (0 <= minimum([m; n] - (b + k * reduce(a - b))))
+                        added = true
+                        push!(antinodes, b + k * reduce(a - b))
+                    end
+                    if (i != j) && (1 <= minimum(a + k * reduce(b - a))) && (0 <= minimum([m; n] - (a + k * reduce(b - a))))
+                        added = true
+                        push!(antinodes, a + k * reduce(b - a))
+                    end
+                    k += 1
+                end
+            end
+        end
+    end
+    return unique(antinodes)
+end
+
+println("part B")
+println(length(b(input, m, n)))
